@@ -1,0 +1,15 @@
+{
+  "name": "proyectocreacioncertificadoservidor",
+  "version": "0.0.1",
+  "description": "Aplicación de servidor que gestiona el proceso de negocio de creación de un certificado",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"No hay tests\""
+  },
+  "dependencies": {
+    "winston": "3.0.0-rc5"
+  },
+  "author": "Ignacio José Alés López",
+  "license": "GPL-3.0-or-later"
+}
