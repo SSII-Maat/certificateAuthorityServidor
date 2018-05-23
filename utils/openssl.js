@@ -26,12 +26,18 @@ function printCSR(csrString) {
 
 function signCertificate(fqdn) {
     return new Promise((accept, reject) => {
-        exec("openssl x509 -req -in CAWarehouse/csr/"+fqdn+" -CA CA.pem -CAkey privateKeyCA.key -pass file:CAPassword.txt -CAcreateserial \
-            -out CAWarehouse/signed/"+fqdn+" -days 365 -sha256 -extfile CAWarehouse/signed/"+fqdn, (error, stdout, stderr) => {
-                if(err) {
-                    reject(err);
+        exec("openssl x509 -req -in 'CAWarehouse/csr/"+fqdn+"' -CA CA.pem -CAkey privateKeyCA.key -passin pass:Reaper -CAcreateserial \
+            -out 'CAWarehouse/signed/"+fqdn+"' -days 365 -sha256", (error, stdout, stderr) => {
+                if(error) {
+                    reject(error);
                 } else {
-                    accept(stdout);
+                    fs.readFile("CAWarehouse/signed/"+fqdn, (err, certificate) => {
+                        if(err) {
+                            reject(err);
+                        } else {
+                            accept(certificate);                            
+                        }
+                    });
                 }
             })
     })
@@ -39,5 +45,6 @@ function signCertificate(fqdn) {
 
 module.exports = {
     saveCSR,
-    printCSR
+    printCSR,
+    signCertificate
 }

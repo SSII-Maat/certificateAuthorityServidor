@@ -75,24 +75,13 @@ var server = net.createServer((socket) => {
             }
         } else if(state == 1) {
             // Generalmente, si responde es porque se ha verificado correctamente el mensaje, continuamos con el certificado
-            signCertificate(fqdn).then((certificate) => {
-                var sendData = Buffer.from(certificate);
-                
-                // Guardamos el certificado, también
-                fs.writeFile("CAWarehouse/signed/"+fqdn, sendData, (err) => {
-                    if(err) {
-                        logger.log({
-                            level: 'info',
-                            message: "No se ha guardado el certificado de forma correcta"
-                        });
-                        socket.write(Buffer.from("500"));
-                    } else {
-                        socket.write(sendData);
-                    }
-                });
+            openssl.signCertificate(fqdn).then((sendData) => {
+                socket.write(sendData);
                 
                 state++; 
-            })
+            }).catch((err) => {
+                error(err);
+            });
         } else if(state == 2) {
             // Esperamos confirmación del proceso y cerramos el socket
             var status = data.toString("utf8");
